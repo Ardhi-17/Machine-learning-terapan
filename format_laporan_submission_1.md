@@ -102,11 +102,14 @@ Kategori: Commercial, Electric Power, Industrial, Residential, Transportation
 
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
-Exploratory Data Analysis
-Analisis Distribusi Data
-Sebagian besar variabel energi menunjukkan distribusi yang tidak normal
-Terdapat beberapa outlier yang menunjukkan periode konsumsi ekstrem
-Pola musiman terlihat jelas dalam data bulanan
+## Exploratory Data Analysis
+### Analisis Distribusi Data
+
+![Dekomposisi time serires](Image/Dekomposisi time serires. png.png)
+
+
+
+
 Analisis Korelasi
 Korelasi positif yang kuat antara beberapa jenis energi terbarukan
 Hubungan yang signifikan antara sektor dan jenis energi yang dikonsumsi
