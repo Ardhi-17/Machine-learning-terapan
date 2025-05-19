@@ -303,7 +303,7 @@ Model-model ini telah dioptimasi untuk memberikan prediksi yang akurat dan dapat
 ## Evaluation
 Dalam proyek analisis dan prediksi konsumsi energi kayu ini, saya menggunakan beberapa metrik evaluasi untuk mengukur performa model regresi dan klasifikasi. Untuk model regresi, kami menggunakan Root Mean Square Error (RMSE), Mean Absolute Error (MAE), dan R-squared (R²). RMSE mengukur rata-rata kesalahan prediksi dengan memberikan penalti lebih besar untuk kesalahan yang besar, MAE mengukur rata-rata kesalahan absolut yang lebih mudah diinterpretasi, dan R² mengukur proporsi varians dalam variabel target yang dapat dijelaskan oleh model.
 
-Hasil evaluasi model regresi menunjukkan bahwa Random Forest dengan hyperparameter tuning memberikan performa terbaik dengan RMSE sebesar [8.598848188866816], MAE sebesar [2.6881734140512474], dan R² sebesar [0.9659576725155296]. Ini menunjukkan bahwa model dapat memprediksi konsumsi energi kayu dengan akurasi yang tinggi dan error yang dapat diterima. 
+Hasil evaluasi model regresi menunjukkan bahwa Random Forest dengan hyperparameter tuning memberikan performa terbaik dengan RMSE sebesar 8.598848188866816, MAE sebesar 2.6881734140512474, dan R² sebesar 0.9659576725155296. Ini menunjukkan bahwa model dapat memprediksi konsumsi energi kayu dengan akurasi yang tinggi dan error yang dapat diterima. 
 
 Untuk model klasifikasi, saya menggunakan accuracy, precision, recall, dan F1-score.
 Accuracy mengukur proporsi prediksi yang benar dari total prediksi, precision mengukur proporsi prediksi positif yang benar, recall mengukur proporsi kasus positif yang berhasil diidentifikasi, dan F1-score menyeimbangkan antara precision dan recall.
