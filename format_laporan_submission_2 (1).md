@@ -133,45 +133,40 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 
 **Gambar ini menunjukkan bahwa Rating 4.0 adalah yang paling umum diberikan, mencakup 26.6% dari total rating, Rating 3.0 di posisi kedua dengan 19.9% dari total rating dan Mayoritas rating (>75%) berada di range 3.0-5.0, menunjukkan kecenderungan rating positif**
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f" width="500"/>
-    <em>Gambar:Presentasi Distribusi Rating</em>
-</p>
+    <img src="https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f" width="700"/>
+</p>    
+<p align="center"><em>Gambar:Presentasi Distribusi Rating</em></p>
+
 
 
 **Berdasarkan visualisasi distribusi rating di bawah, terlihat distribusi yang tidak merata (timpang), Hal ini menunjukkan bahwa pengguna cenderung memberikan rating yang lebih tinggi (3.0-5.0), Rating 0.5 memiliki frekuensi terendah (sekitar 1,500 rating), Rating 1.5 dan 2.5 juga relatif rendah (masing-masing sekitar 2,000 dan 5,000 rating), Rating 3.0 memiliki frekuensi tinggi (sekitar 20,000 rating), Rating 4.0 memiliki frekuensi tertinggi (sekitar 25,000 rating) dan Rating 5.0 memiliki frekuensi moderat (sekitar 13,000 rating)**
+
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/79f2bca7-95d4-4f1d-b20a-d5d5cbfcbfdb" width="500"/>
-    <em>Gambar:Distribusi Rating Pengguna</em>
+  <img src="https://github.com/user-attachments/assets/79f2bca7-95d4-4f1d-b20a-d5d5cbfcbfdb" width="700"/><br>
+  <em>Gambar: Distribusi Rating Pengguna</em>
 </p>
+
 
 
 **Berdasarkan visualisasi distribusi genre film di bawah, dapat dilihat beberapa insight penting dimana. Dimana genre Drama mendominasi dengan jumlah film terbanyak (sekitar 20,000 film), Comedy dan Action menempati posisi kedua dan ketiga dengan masing-masing sekitar 12,500 dan 7,000 film, Genre-genre seperti Thriller, Romance, dan Horror memiliki jumlah film yang moderat (sekitar 5,000-7,000 film), Genre Documentary, Adventure, dan Mystery memiliki jumlah film yang relatif sedikit (2,500-4,000 film) dan Genre-genre khusus seperti War, Western, dan TV Movie memiliki jumlah film yang sangat sedikit (di bawah 2,000 film)**
+
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/c0230764-4f84-4f7a-bc28-8c2654d31df2" width="500"/>
-    <em>Gambar:Distribusi Genre Film</em>
+  <img src="https://github.com/user-attachments/assets/c0230764-4f84-4f7a-bc28-8c2654d31df2" width="700"/><br>
+  <em>Gambar: Distribusi Genre Film</em>
+</p>
+
+
+
+**Berdasarkan tabel 10 Film dengan Skor Tertinggi (Weighted Score), dapat disimpulkan bahwa film dengan skor tertinggi bukan hanya ditentukan oleh rata-rata rating, tetapi juga dipengaruhi oleh jumlah vote yang mendukung rating tersebut. Misalnya, Planet Earth II memiliki rating rata-rata 9.5 namun hanya didukung oleh 50 vote, sehingga weighted score-nya sedikit lebih rendah dibandingkan Dilwale Dulhania Le Jayenge yang meskipun memiliki rating 9.1 namun dengan 661 vote menghasilkan skor tertimbang yang lebih stabil. Film seperti The Shawshank Redemption dan The Godfather memiliki weighted score tinggi karena kombinasi antara popularitas (jumlah vote yang sangat besar) dan rating yang tetap tinggi.**
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4ff00c82-c8db-4dc9-b195-b23f8c256649" width="700"/><br>
+  <em>Gambar: 10 Film Dengan Skor Tertinggi (Weighted Score)</em>
 </p>
 
 
 
 
 
-
-
-
-
-
-![Image](https://github.com/user-attachments/assets/4ff00c82-c8db-4dc9-b195-b23f8c256649)
-
-
-![Image](https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e)
-
-![Image](https://github.com/user-attachments/assets/bed2a555-6d0a-4967-ae71-d00e52f8143f)
-
-![Image](https://github.com/user-attachments/assets/453dd499-40c8-4929-b676-baa76416bca8)
-
-![Image](https://github.com/user-attachments/assets/ff401109-875a-45dc-9329-d5f3473011fa)
-
-![Image](https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87)
 
 
 
@@ -200,6 +195,20 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+
+
+
+
+![Image](https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e)
+
+![Image](https://github.com/user-attachments/assets/bed2a555-6d0a-4967-ae71-d00e52f8143f)
+
+![Image](https://github.com/user-attachments/assets/453dd499-40c8-4929-b676-baa76416bca8)
+
+![Image](https://github.com/user-attachments/assets/ff401109-875a-45dc-9329-d5f3473011fa)
+
+![Image](https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87)
+
 
 **---Ini adalah bagian akhir laporan---**
 [1] Y. Zhang and X. Chen, "Explainable Recommendation: A Survey and New Perspectives," *Foundations and Trends® in Information Retrieval*, vol. 14, no. 1, pp. 1–101, 2020. [Online]. Available: https://doi.org/10.1561/1500000066
