@@ -58,7 +58,7 @@ Dataset yang digunakan dalam proyek ini adalah data yang berisikan variabel vari
 | Nama Dataset         | Jumlah Baris     | Jumlah Kolom | Tipe Data | Deskripsi                                                                 |
 |----------------------|------------------|---------------|--------------|---------------------------------------------------------------------------|
 | movies_metadata.csv  | 45.466 baris     | 24 kolom      | Object & float64      | Berisi informasi deskriptif tentang film seperti judul, genre, dan rilis |
-| ratings.csv          | 26.024.289 baris | 4 kolom       | int64 & float64     | Berisi interaksi pengguna berupa rating terhadap film                    |
+| ratings.csv          | 100836 baris     | 4 kolom       | int64 & float64       | Berisi interaksi pengguna berupa rating terhadap film                    |
 
 
 Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
@@ -128,7 +128,28 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 
 *Pada dataset rating.csv, tidak ditemukan missing value.*
 
+##Exploratory Data Analysis
 
+![Image](https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f)
+
+![Image](https://github.com/user-attachments/assets/79f2bca7-95d4-4f1d-b20a-d5d5cbfcbfdb)
+
+
+![Image](https://github.com/user-attachments/assets/c0230764-4f84-4f7a-bc28-8c2654d31df2)
+
+
+![Image](https://github.com/user-attachments/assets/4ff00c82-c8db-4dc9-b195-b23f8c256649)
+
+
+![Image](https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e)
+
+![Image](https://github.com/user-attachments/assets/bed2a555-6d0a-4967-ae71-d00e52f8143f)
+
+![Image](https://github.com/user-attachments/assets/453dd499-40c8-4929-b676-baa76416bca8)
+
+![Image](https://github.com/user-attachments/assets/ff401109-875a-45dc-9329-d5f3473011fa)
+
+![Image](https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87)
 
 
 
