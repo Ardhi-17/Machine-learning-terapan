@@ -383,6 +383,7 @@ Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
 | `verbose`              | 1 – Menampilkan log selama pelatihan                                         |
 | `shuffle`              | Data diacak (`sample(frac=1, random_state=42)`) sebelum split train/val      |
 
+
 Hasil Training Model
 | Metrik | Data Train | Data Validasi |
 |--------|------------|----------------|
@@ -400,7 +401,9 @@ Hasil Training Model
 | `learning_rate`  | 0.001, 0.0005    |
 | `regularization` | 1e-2, 1e-3       |
 | `batch_size`     | 64, 128          |
+
 Sebanyak 16 kombinasi total diuji (4 parameter × 2 nilai masing-masing).
+
 ##### Prosedur Tuning
 1. Model dibangun dengan kombinasi parameter tertentu menggunakan class RecommenderNet.
 2. Model dikompilasi dengan:
@@ -422,6 +425,7 @@ Hasil 5 Kombinasi Terbaik Berdasarkan val_mae
 | 4   | 64             | 0.001         | 0.001          | 64         | 0.036513 | 0.147070 | 0.191082 |
 | 5   | 128            | 0.001         | 0.010          | 128        | 0.036829 | 0.148200 | 0.191908 |
 
+
 Hasil 5 Kombinasi Terbaik Berdasarkan val_rmse
 | No. | embedding_size | learning_rate | regularization | batch_size | val_loss | val_mae  | val_rmse |
 |-----|----------------|---------------|----------------|------------|----------|----------|----------|
@@ -430,6 +434,7 @@ Hasil 5 Kombinasi Terbaik Berdasarkan val_rmse
 | 3   | 64             | 0.001         | 0.001          | 64         | 0.036513 | 0.147070 | 0.191082 |
 | 4   | 128            | 0.001         | 0.001          | 64         | 0.036517 | 0.147039 | 0.191094 |
 | 5   | 128            | 0.001         | 0.010          | 128        | 0.036829 | 0.148200 | 0.191908 |
+
 
 Berikut adalah kesimpulan hasil tuning hyperparameter
 | Hyperparameter   | Nilai Terbaik |
@@ -444,11 +449,14 @@ Perbandingan Sebelum dan Sesudah Tuning
 | ------ | -------------- | -------------- |
 | RMSE   | 0.1987         | **0.1909**     |
 | MAE    | 0.1542         | **0.1469**     |
+
 Setelah dilakukan tuning hyperparameter, nilai MAE pada data validasi turun dari 0.1542 menjadi 0.1469, dan nilai RMSE turun dari 0.1987 menjadi 0.1909.
 
 Maka, untuk Top-N recommendation akan digunakan model setelah tuning hyperparameter.
 ##### **Top-N Recommendation**
+
 Berikut adalah daftar 10 rekomendasi film untuk user ID 20
+
 | No. | movieId | Judul Film                                  | Prediksi Rating |
 |-----|---------|----------------------------------------------|-----------------|
 | 1   | 318     | The Million Dollar Hotel                     | 4.107           |
@@ -461,7 +469,9 @@ Berikut adalah daftar 10 rekomendasi film untuk user ID 20
 | 8   | 593     | Solaris                                      | 3.867           |
 | 9   | 527     | Once Were Warriors                           | 3.866           |
 | 10  | 750     | Murder She Said                              | 3.848           |
+
 ## Evaluation Collaborative Filtering
+
 ##### **Metrik Evaluasi yang Digunakan**
 Pada model Collaborative Filtering berbasis neural network, digunakan dua metrik evaluasi utama:
 1.  Mean Absolute Error (MAE)
@@ -475,7 +485,9 @@ Pada model Collaborative Filtering berbasis neural network, digunakan dua metrik
 Formula:
         
         RMSE = √[(1/n) × ∑ᵢ₌₁ⁿ (yᵢ − ŷᵢ)²]
+
 #### Hasil Evaluasi Model
+
 | Metrik | Sebelum Tuning | Setelah Tuning |
 | ------ | -------------- | -------------- |
 | MAE    | 0.1542         | **0.1469**     |
