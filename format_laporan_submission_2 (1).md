@@ -230,6 +230,7 @@ Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebaga
 
 4. Menangani Data Duplikat pada kolom `moveId`, data duplikat berjumlah 30 data dan di hapus lalu disisakan baris pertama dari setiap duplikatnya.
 5. Mengurutkan data pengguna berdasarkan ID untuk memudahkan analisa data rating dan movie ID.
+6. 
 | Index | userId | movieId | rating | timestamp  |
 |-------|--------|---------|--------|------------|
 | 180   | 1      | 2716    | 5.0    | 964983414  |
