@@ -196,6 +196,7 @@ Berikut ini adalah hasilnya :
 
 
 Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebagai berikut:
+
 **Distribusi Genre dan Rating:**
 1. Drama dan Comedy mendominasi dengan total >33,000 film
 2. Rating 4.0 paling umum (26.6% dari total)
