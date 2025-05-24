@@ -256,7 +256,7 @@ Tujuan:
 Content-Based Filtering (CBF) merupakan metode rekomendasi yang menyarankan film kepada pengguna berdasarkan atribut konten film itu sendiri, seperti genre, sutradara, atau aktor. Pada implementasi ini, sistem menggunakan genre sebagai satu-satunya fitur utama, tanpa melibatkan sinopsis atau teks deskriptif lain seperti overview.
 
 Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pengguna sebelumnya, lalu menyarankan film-film tersebut menggunakan perhitungan cosine similarity terhadap vektor genre.
-#### **Langkah-langkah Pengerjaan**
+##### **Langkah-langkah Pengerjaan**
 1. Persiapan Data
 -  Menghapus entri film yang duplikat berdasarkan movieId agar setiap film hanya muncul satu kali.
 - Mengonversi kolom genres yang sebelumnya berbentuk list menjadi string (dipisahkan koma) agar dapat diproses dengan TF-IDF.
@@ -272,7 +272,16 @@ Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pe
 1. TfidfVectorizer(): default parameter
 2. cosine_similarity(): perhitungan tanpa parameter tambahan (standard sklearn)
 
-#### **Top-N Recommendation Sebagai Output**
+| Parameter                     | Nilai / Penjelasan                                                         |
+|-------------------------------|----------------------------------------------------------------------------|
+| Metode Similarity             | `cosine_similarity(tfidf_matrix)`                                         |
+| Output Similarity Matrix      | DataFrame berukuran (2542 x 2542) – antar semua kombinasi film            |
+| Fungsi Rekomendasi            | `film_recommendations(nama_film, similarity_data, k=10)`                  |
+| Jumlah Top-N Rekomendasi      | 10 film teratas berdasarkan kemiripan genre                               |
+| Index & Kolom Similarity DF   | `title` sebagai indeks dan kolom                                          |
+
+
+##### **Top-N Recommendation Sebagai Output**
 Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi dengan nomor urutan (Top-10):
 | No. | Judul Film                     | Genre            |
 |-----|--------------------------------|------------------|
@@ -287,7 +296,7 @@ Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi denga
 | 9   | Sin City: A Dame to Kill For   | Crime, Thriller  |
 | 10  | Get Carter                     | Crime, Thriller  |
 
-#### **Kelebihan dan Kekurangan**
+##### **Kelebihan dan Kekurangan**
 **Kelebihan:**
 - Cocok untuk sistem rekomendasi awal atau saat data rating tidak tersedia.
 - Rekomendasi konsisten untuk genre yang disukai pengguna.
@@ -297,6 +306,129 @@ Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi denga
 - Tidak mempertimbangkan rating pengguna atau kualitas film (bisa saja merekomendasikan film dengan rating rendah).
 - Tidak mampu mengidentifikasi preferensi non-genre seperti gaya penyutradaraan atau sinematografi.
 - Film dengan genre unik atau langka memiliki potensi minim untuk direkomendasikan.
+- 
+## Evaluation Model Content Based Filtering
+Dalam proyek ini, evaluasi terhadap model Content-Based Filtering (CBF) dilakukan menggunakan metrik precision, yaitu rasio antara jumlah rekomendasi yang relevan dengan jumlah total rekomendasi yang diberikan.
+Formula Precision:
+
+    Precision = (Jumlah Rekomendasi Relevan / Total Rekomendasi) × 100%
+
+**Langkah Evaluasi:**
+1. Film yang dijadikan referensi: Pulp Fiction.
+2. Genre target (relevan): Crime dan Thriller.
+3. Fungsi evaluasi memeriksa apakah setiap film yang direkomendasikan mengandung kedua genre tersebut.
+4. Hasil evaluasi: dari 10 film yang direkomendasikan, semuanya mengandung genre Crime dan Thriller.
+
+**Hasil Evaluasi:**
+| Jumlah Rekomendasi Relevan | Total Rekomendasi | Precision |
+| -------------------------- | ----------------- | --------- |
+| 10                         | 10                | 100.00%   |
+### Hubungan dengan Business Understanding
+
+Evaluasi ini secara langsung menjawab dan mendukung Business Understanding dari proyek, sebagai berikut:
+1. Apakah sudah menjawab setiap problem statement?
+Ya. Salah satu permasalahan utama adalah bagaimana memberikan rekomendasi yang relevan dan sesuai preferensi pengguna. Dengan precision 100%, model CBF membuktikan bahwa ia mampu menangkap esensi dari film referensi dan menggunakannya untuk menyarankan film serupa.
+2. Apakah berhasil mencapai setiap goals?
+Ya. Tujuan dari pendekatan Content-Based Filtering adalah memberikan rekomendasi berbasis konten yang mirip dengan film favorit pengguna. Model berhasil menyarankan film dengan genre yang sangat mirip, memenuhi ekspektasi dari sisi kualitas konten yang disarankan.
+3. Apakah solusi yang dirancang berdampak?
+Ya. Model ini berguna dalam situasi cold-start, yaitu ketika data interaksi pengguna sangat terbatas. Model mampu memberikan saran yang konsisten tanpa perlu mengetahui riwayat rating pengguna. Dalam konteks bisnis, pendekatan ini:
+- Meningkatkan engagement pengguna baru.
+- Meningkatkan retensi awal karena pengguna cepat mendapat rekomendasi relevan.
+- Menurunkan risiko bounce rate akibat saran yang tidak cocok.
+
+### 2. Model Collaborative Filtering
+Collaborative Filtering adalah teknik sistem rekomendasi yang menyarankan film berdasarkan kesamaan perilaku atau preferensi pengguna lain. Pendekatan ini berasumsi bahwa pengguna yang menyukai film yang sama kemungkinan besar akan menyukai film serupa lainnya. Model ini tidak menggunakan konten film secara langsung, melainkan mengandalkan pola interaksi antara pengguna dan item (dalam hal ini: rating film).
+
+Model dikembangkan dengan pendekatan embedding-based neural network, yaitu memetakan userId dan movieId ke dalam ruang vektor berdimensi rendah, dan menggunakan hasil interaksinya untuk memprediksi rating yang diberikan.
+##### **Langkah-langkah Pengerjaan**
+1. Persiapan dan Encoding Data
+- Dataset df_movies_ratings telah melalui tahap preprocessing sebelumnya.
+- userId dan movieId di-encode menjadi integer menggunakan mapping dictionary agar bisa digunakan dalam embedding layer.
+- Kolom ratings dinormalisasi ke skala 0–1 agar sesuai dengan output sigmoid model.
+2. Pembagian Data
+Dataset diacak dan dibagi menjadi 80% data pelatihan dan 20% data validasi.
+3. Arsitektur Model Neural Network
+Model dibangun dengan class RecommenderNet yang merupakan turunan dari tf.keras.Model. Arsitektur terdiri dari:
+- User Embedding Layer dan Movie Embedding Layer
+- User Bias dan Movie Bias (untuk menangkap kecenderungan masing-masing)
+- Dot Product antara user dan movie vector
+- Aktivasi Sigmoid di output
+4. Pelatihan Model
+Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
+- Loss function: Mean Squared Error (MSE)
+- Optimizer: Adam
+##### **Parameter yang digunakan**
+**Parameter Arsitektur Model (RecommenderNet)**
+| Parameter              | Nilai / Penjelasan                                                           |
+|------------------------|------------------------------------------------------------------------------|
+| `embedding_size`       | 50 – Dimensi vektor embedding                                                |
+| `user_embedding`       | Embedding(user: 610 x 50)                                                    |
+| `movie_embedding`      | Embedding(movie: 2790 x 50)                                                  |
+| `user_bias`            | Embedding(user: 610 x 1) – untuk menangkap kecenderungan pengguna            |
+| `movie_bias`           | Embedding(movie: 2790 x 1) – untuk menangkap kecenderungan film              |
+| `regularization`       | L2 regularization (`keras.regularizers.l2(1e-6)`)                            |
+| `activation`           | Sigmoid – menjaga output dalam skala 0–1                                     |
+**Parameter Pelatihan Model**
+| Parameter              | Nilai / Penjelasan                                                           |
+|------------------------|------------------------------------------------------------------------------|
+| `loss`                 | Mean Squared Error (MSE)                                                     |
+| `optimizer`            | Adam (`learning_rate=0.001`)                                                 |
+| `metrics`              | RMSE (`RootMeanSquaredError`), MAE (`MeanAbsoluteError`)                     |
+| `epochs`               | 50                                                                           |
+| `batch_size`           | 64                                                                           |
+| `validation_data`      | 20% dari dataset                                                              |
+| `verbose`              | 1 – Menampilkan log selama pelatihan                                         |
+| `shuffle`              | Data diacak (`sample(frac=1, random_state=42)`) sebelum split train/val      |
+
+ ##### **Modeling dengan Tuning Hyperparameter**
+ 
+ Tuning hyperparameter bertujuan untuk meningkatkan performa model dengan menemukan kombinasi parameter terbaik. Pada tahap ini dilakukan grid search manual terhadap beberapa kombinasi hyperparameter utama yang mempengaruhi kinerja model embedding neural network untuk sistem rekomendasi.
+ 
+ Berikut adalah daftar hyperparameter yang diuji dalam grid search:
+ | Hyperparameter   | Nilai yang Diuji |
+| ---------------- | ---------------- |
+| `embedding_size` | 64, 128          |
+| `learning_rate`  | 0.001, 0.0005    |
+| `regularization` | 1e-2, 1e-3       |
+| `batch_size`     | 64, 128          |
+Sebanyak 16 kombinasi total diuji (4 parameter × 2 nilai masing-masing).
+##### Prosedur Tuning
+1. Model dibangun dengan kombinasi parameter tertentu menggunakan class RecommenderNet.
+2. Model dikompilasi dengan:
+- Loss function: MeanSquaredError
+- Optimizer: Adam dengan learning_rate tertentu
+- Metrics: RootMeanSquaredError (rmse) dan MeanAbsoluteError (mae)
+3. Callbacks digunakan untuk meningkatkan efisiensi pelatihan:
+- EarlyStopping: menghentikan pelatihan jika tidak ada perbaikan pada val_loss dalam 5 epoch.
+- ReduceLROnPlateau: menurunkan learning rate secara otomatis jika val_loss stagnan.
+4. Model dilatih selama maksimal 20 epoch (namun dihentikan lebih awal jika memenuhi kondisi early stop).
+5. Nilai minimum dari val_mae, val_rmse, dan val_loss selama pelatihan disimpan untuk setiap kombinasi.
+
+Hasil 5 Kombinasi Terbaik Berdasarkan val_mae
+| No. | embedding_size | learning_rate | regularization | batch_size | val_loss | val_mae  | val_rmse |
+|-----|----------------|---------------|----------------|------------|----------|----------|----------|
+| 1   | 128            | 0.001         | 0.010          | 64         | 0.036462 | 0.146889 | 0.190952 |
+| 2   | 64             | 0.001         | 0.010          | 64         | 0.036487 | 0.146912 | 0.191015 |
+| 3   | 128            | 0.001         | 0.001          | 64         | 0.036517 | 0.147039 | 0.191094 |
+| 4   | 64             | 0.001         | 0.001          | 64         | 0.036513 | 0.147070 | 0.191082 |
+| 5   | 128            | 0.001         | 0.010          | 128        | 0.036829 | 0.148200 | 0.191908 |
+
+Hasil 5 Kombinasi Terbaik Berdasarkan val_rmse
+| No. | embedding_size | learning_rate | regularization | batch_size | val_loss | val_mae  | val_rmse |
+|-----|----------------|---------------|----------------|------------|----------|----------|----------|
+| 1   | 128            | 0.001         | 0.010          | 64         | 0.036462 | 0.146889 | 0.190952 |
+| 2   | 64             | 0.001         | 0.010          | 64         | 0.036487 | 0.146912 | 0.191015 |
+| 3   | 64             | 0.001         | 0.001          | 64         | 0.036513 | 0.147070 | 0.191082 |
+| 4   | 128            | 0.001         | 0.001          | 64         | 0.036517 | 0.147039 | 0.191094 |
+| 5   | 128            | 0.001         | 0.010          | 128        | 0.036829 | 0.148200 | 0.191908 |
+
+Berikut adalah kesimpulan hasil tuning hyperparameter
+| Hyperparameter   | Nilai Terbaik |
+|------------------|---------------|
+| embedding_size   | 128           |
+| learning_rate    | 0.001         |
+| regularization   | 0.01          |
+| batch_size       | 64            |
 
 ## Evaluation
 Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
