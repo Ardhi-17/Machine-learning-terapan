@@ -41,16 +41,13 @@ Dengan memanfaatkan data historis (rating, genre, waktu tonton), sistem dapat me
 Untuk mengatasi berbagai permasalahan yang telah diuraikan sebelumnya serta mencapai tujuan yang telah ditetapkan, maka solusi yang ditawarkan adalah sebagai berikut 
 
 **1. Content-Based Filtering (CBF)**
-
-    Menggunakan informasi seperti genre, rating, title untuk menemukan film yang mirip dengan yang pernah ditonton atau disukai pengguna. Cocok untuk pengguna baru yang belum banyak memberi rating.
+Menggunakan informasi seperti genre, rating, title untuk menemukan film yang mirip dengan yang pernah ditonton atau disukai pengguna. Cocok untuk pengguna baru yang belum banyak memberi rating.
 
 **2. Collaborative Filtering (CF) berbasis Neural Network Embedding**
-
-    Menggunakan data rating pengguna dan menerapkan embedding untuk user ID dan movie ID, lalu melatih model neural network untuk memprediksi rating antar pasangan user–movie yang belum pernah terjadi.
+ Menggunakan data rating pengguna dan menerapkan embedding untuk user ID dan movie ID, lalu melatih model neural network untuk memprediksi rating antar pasangan user–movie yang belum pernah terjadi.
 
 **3. Evaluasi dan Tuning Model**
-
-    Mengukur performa sistem rekomendasi menggunakan metrik RMSE dan MAE. Model yang paling optimal akan dipilih berdasarkan performa pada data validasi dan stabilitas hasil.
+Mengukur performa sistem rekomendasi menggunakan metrik RMSE dan MAE. Model yang paling optimal akan dipilih berdasarkan performa pada data validasi dan stabilitas hasil.
     
 ## Data Understanding
 Dataset yang digunakan dalam proyek ini adalah data yang berisikan variabel variabel tentang rating pengguna terhadapat sebuah film dan juga metadata film seperti judul, genre, rating, bahasa, tahun rili dan lainnya. Data Bersumber dari [Kaggle - Movie Recommendation Data](https://www.kaggle.com/datasets/rohan4050/movie-recommendation-data)
@@ -130,7 +127,7 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 
 ###  Exploratory Data Analysis
 #### Analisis Distribusi Data
-
+pada bagian ini, kita akan melakukan explorasi pada dataset untuk mendapatkan insight yang dibutuhkan dalam pembuatan model nantinya.
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f" width="700"/>
@@ -158,8 +155,23 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 
 **Berdasarkan visualisasi distribusi genre film di bawah, dapat dilihat beberapa insight penting dimana. Dimana genre Drama mendominasi dengan jumlah film terbanyak (sekitar 20,000 film), Comedy dan Action menempati posisi kedua dan ketiga dengan masing-masing sekitar 12,500 dan 7,000 film, Genre-genre seperti Thriller, Romance, dan Horror memiliki jumlah film yang moderat (sekitar 5,000-7,000 film), Genre Documentary, Adventure, dan Mystery memiliki jumlah film yang relatif sedikit (2,500-4,000 film) dan Genre-genre khusus seperti War, Western, dan TV Movie memiliki jumlah film yang sangat sedikit (di bawah 2,000 film)**
 
+### Pemberian Skor pada film (Weighted Score)
 
+**Weighted score** merupakan metode penilaian yang digunakan untuk menentukan skor akhir sebuah film dengan mempertimbangkan dua aspek utama, yaitu rata-rata rating film (`vote_average`) dan jumlah rating yang diterima (`vote_count`). Pendekatan ini bertujuan agar film dengan jumlah rating yang sedikit namun memiliki rating tinggi tidak secara otomatis menempati peringkat teratas, sehingga hasil rekomendasi menjadi lebih adil dan merepresentasikan preferensi pengguna secara lebih akurat.
 
+Rumus weighted score yang umum digunakan (sering disebut juga sebagai IMDB weighted rating) adalah sebagai berikut:
+
+`Weighted Score = (v / (v + m)) * R + (m / (v + m)) * C`
+
+dengan keterangan:
+- `R` = rata-rata rating film (`vote_average`)
+- `v` = jumlah rating film (`vote_count`)
+- `m` = ambang minimum jumlah rating agar film layak dipertimbangkan (misal: persentil ke-90 dari `vote_count`)
+- `C` = rata-rata rating dari seluruh film dalam dataset
+
+Dengan menggunakan rumus ini, film yang memiliki banyak rating dan rating rata-rata yang tinggi akan mendapatkan skor lebih baik, sementara film dengan rating tinggi namun jumlah rating sedikit tidak langsung mendominasi peringkat teratas.
+
+Berikut ini adalah hasilnya :
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4ff00c82-c8db-4dc9-b195-b23f8c256649" width="700"/><br>
@@ -167,30 +179,124 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 </p>
 
 
+**10 Film dengan Jumlah Rating Terbanyak:**
+
+| No. | Judul Film                         | Rata-rata Rating (`mean_ratings`) | Total Rating (`total_ratings`) |
+|-----|------------------------------------|-----------------------------------|---------------------------------|
+| 1   | The Million Dollar Hotel           | 4.429                             | 317                             |
+| 2   | Terminator 3: Rise of the Machines | 4.197                             | 307                             |
+| 3   | Solaris                            | 4.144                             | 282                             |
+| 4   | The 39 Steps                        | 4.231                             | 251                             |
+| 5   | Monsoon Wedding                    | 3.750                             | 238                             |
+| 6   | Three Colors: Red                  | 4.032                             | 237                             |
+| 7   | Once Were Warriors                 | 4.225                             | 220                             |
+| 8   | License to Wed                     | 4.273                             | 218                             |
+| 9   | The Passion of Joan of Arc         | 3.446                             | 202                             |
+| 10  | 48 Hrs.                            | 3.846                             | 201                             |
 
 
+Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebagai berikut:
+**Distribusi Genre dan Rating:**
+1. Drama dan Comedy mendominasi dengan total >33,000 film
+2. Rating 4.0 paling umum (26.6% dari total)
+3. 75% rating berada di range 3.0-5.0
+4. Genre khusus seperti War dan Western memiliki jumlah film terbatas
+5. Terdapat bias positif yang kuat dalam pemberian ratin
 
+**Analisis 10 Film dengan Rating Terbanyak:**
+1. "The Million Dollar Hotel" memiliki rating rata-rata tertinggi (4.43) dengan 317 rating
+2. "Terminator 3" di posisi kedua dengan rating 4.20 dari 307 rating
+3. "Solaris" di posisi ketiga dengan rating 4.14 dari 282 rating
+4. Mayoritas film dalam top 10 memiliki rating di atas 4.0
+5. Total rating untuk film-film top 10 berkisar antara 200-320 rating
 
-
-
-
-
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+**Analisis Film dengan Skor Tertinggi:**
+1. "Planet Earth II" memperoleh skor tertinggi (9.08) dengan vote_average 9.5
+2. Film dokumenter dan series mendominasi top 10 (Planet Earth, Cosmos)
+3. Film klasik seperti "The Shawshank Redemption" dan "The Godfather" konsisten di top 10
+4. Film-film Asia seperti "Your Name" dan "Dilwale Dulhania Le Jayenge" menunjukkan kualitas tinggi
+5. Weighted score mempertimbangkan jumlah vote, menghasilkan ranking yang lebih representatif
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+1. Memilih fitur yang relevan pada dataset yang sudah digabung untuk memudahkan proses preprocessing data dan juga training model. Fitur yang dipilih adalah `movieId`, `genres`,`title`, `vote_average`,`vote_count`
+2. Menangani Missing Value pada fitur yang dipilih 
+
+| Index  | movieId | genres                                                                                   | title | vote_average | vote_count |
+|--------|---------|------------------------------------------------------------------------------------------|-------|--------------|------------|
+| 19729  | 82663   | [{'id': 28, 'name': 'Action'}, {'id': 53, 'name': 'Thriller'}]                           | NaN   | NaN          | NaN        |
+| 29502  | 122662  | [{'id': 16, 'name': 'Animation'}, {'id': 878, 'name': 'Science Fiction'}]               | NaN   | NaN          | NaN        |
+| 35586  | 249260  | [{'id': 10770, 'name': 'TV Movie'}, {'id': 28, 'name': 'Action'}]                        | NaN   | NaN          | NaN        |
+
+4. Menangani Data Duplikat pada kolom `moveId`, data duplikat berjumlah 30 data dan di hapus lalu disisakan baris pertama dari setiap duplikatnya.
+5. Mengurutkan data pengguna berdasarkan ID untuk memudahkan analisa data rating dan movie ID.
+| Index | userId | movieId | rating | timestamp  |
+|-------|--------|---------|--------|------------|
+| 180   | 1      | 2716    | 5.0    | 964983414  |
+| 181   | 1      | 2761    | 5.0    | 964982703  |
+| 182   | 1      | 2797    | 4.0    | 964981710  |
+| 183   | 1      | 2826    | 4.0    | 964980523  |
+| 184   | 1      | 2858    | 5.0    | 964980868  |
+
+6. Mengubah fitur `genres` pada dataset movies ke dalam bentuk list untuk memudahkan proses ekstraksi fitur dan juga vektorisasi.
+7. Gabungkan Dataset movies yang sudah di preprocessing dengan dataset ratings dan hapus kolom yang tidak diperlukan seperti `timestamp`, `vote_average`, `vote_count`
+**Tujuan: menghubungkan metadata film seperti genre dan title film dengan perilaku pengguna (rating) agar model dapat melakukan personalisasi.**
+8. Ambil 30.000 dataset secara acak dari total kesuluruhan dataset dengan teknik sampling shuffle. 
+9. Menggunakan TfidfVectorizer untuk melakukan pembobotan.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+Sistem rekomendasi dikembangkan untuk menjawab permasalahan utama yaitu bagaimana membantu pengguna menemukan film yang relevan dan meningkatkan engagement pada platform digital. Dalam proyek ini, dua pendekatan sistem rekomendasi diterapkan:
+Tujuan:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+-  Memberikan Top-N rekomendasi film untuk setiap pengguna.
+
+- Membandingkan dua pendekatan yang berbeda untuk melihat efektivitas dan keakuratannya dalam memberikan rekomendasi.
+
+### 1. Model Content Based Filtering
+Content-Based Filtering (CBF) merupakan metode rekomendasi yang menyarankan film kepada pengguna berdasarkan atribut konten film itu sendiri, seperti genre, sutradara, atau aktor. Pada implementasi ini, sistem menggunakan genre sebagai satu-satunya fitur utama, tanpa melibatkan sinopsis atau teks deskriptif lain seperti overview.
+
+Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pengguna sebelumnya, lalu menyarankan film-film tersebut menggunakan perhitungan cosine similarity terhadap vektor genre.
+#### **Langkah-langkah Pengerjaan**
+1. Persiapan Data
+-  Menghapus entri film yang duplikat berdasarkan movieId agar setiap film hanya muncul satu kali.
+- Mengonversi kolom genres yang sebelumnya berbentuk list menjadi string (dipisahkan koma) agar dapat diproses dengan TF-IDF.
+2. Ekstraksi Fitur: TF-IDF pada Genre
+- Menggunakan TfidfVectorizer dari sklearn untuk mengubah data genres menjadi matriks numerik.
+- Matriks hasil ekstraksi memiliki dimensi (2542, 22), artinya terdapat 2542 film dan 22 genre unik yang terekstrak.
+3. Perhitungan Kemiripan
+- Menggunakan cosine similarity untuk menghitung kemiripan antar film berdasarkan genre.
+- Hasil perhitungan disimpan dalam bentuk DataFrame, dengan nama film sebagai index dan kolom.
+4. Fungsi Rekomendasi
+- Membuat fungsi film_recommendations() yang Menerima input judul film dan mengembalikan daftar Top-10 film lain yang paling mirip berdasarkan genre
+#### **Parameter yang Digunakan**
+1. TfidfVectorizer(): default parameter
+2. cosine_similarity(): perhitungan tanpa parameter tambahan (standard sklearn)
+
+#### **Top-N Recommendation Sebagai Output**
+Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi dengan nomor urutan (Top-10):
+| No. | Judul Film                     | Genre            |
+|-----|--------------------------------|------------------|
+| 1   | Incognito                      | Crime, Thriller  |
+| 2   | Snatch                         | Thriller, Crime  |
+| 3   | Payment Deferred               | Crime, Thriller  |
+| 4   | The Key to Reserva             | Crime, Thriller  |
+| 5   | Ocean's Twelve                 | Thriller, Crime  |
+| 6   | Swimming Pool                  | Thriller, Crime  |
+| 7   | Bloodline                      | Crime, Thriller  |
+| 8   | Pacific Heights                | Crime, Thriller  |
+| 9   | Sin City: A Dame to Kill For   | Crime, Thriller  |
+| 10  | Get Carter                     | Crime, Thriller  |
+
+#### **Kelebihan dan Kekurangan**
+**Kelebihan:**
+- Cocok untuk sistem rekomendasi awal atau saat data rating tidak tersedia.
+- Rekomendasi konsisten untuk genre yang disukai pengguna.
+- Mudah diinterpretasikan dan cepat diolah (genre = fitur yang ringkas).
+
+**Kekurangan:**
+- Tidak mempertimbangkan rating pengguna atau kualitas film (bisa saja merekomendasikan film dengan rating rendah).
+- Tidak mampu mengidentifikasi preferensi non-genre seperti gaya penyutradaraan atau sinematografi.
+- Film dengan genre unik atau langka memiliki potensi minim untuk direkomendasikan.
 
 ## Evaluation
 Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
