@@ -380,6 +380,12 @@ Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
 | `verbose`              | 1 – Menampilkan log selama pelatihan                                         |
 | `shuffle`              | Data diacak (`sample(frac=1, random_state=42)`) sebelum split train/val      |
 
+Hasil Training Model
+| Metrik | Data Train | Data Validasi |
+|--------|------------|----------------|
+| RMSE   | 0.1862     | 0.1987         |
+| MAE    | 0.1435     | 0.1542         |
+
  ##### **Modeling dengan Tuning Hyperparameter**
  
  Tuning hyperparameter bertujuan untuk meningkatkan performa model dengan menemukan kombinasi parameter terbaik. Pada tahap ini dilakukan grid search manual terhadap beberapa kombinasi hyperparameter utama yang mempengaruhi kinerja model embedding neural network untuk sistem rekomendasi.
@@ -430,16 +436,65 @@ Berikut adalah kesimpulan hasil tuning hyperparameter
 | regularization   | 0.01          |
 | batch_size       | 64            |
 
-## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+Perbandingan Sebelum dan Sesudah Tuning
+| Metrik | Sebelum Tuning | Setelah Tuning |
+| ------ | -------------- | -------------- |
+| RMSE   | 0.1987         | **0.1909**     |
+| MAE    | 0.1542         | **0.1469**     |
+Setelah dilakukan tuning hyperparameter, nilai MAE pada data validasi turun dari 0.1542 menjadi 0.1469, dan nilai RMSE turun dari 0.1987 menjadi 0.1909.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Maka, untuk Top-N recommendation akan digunakan model setelah tuning hyperparameter.
+##### **Top-N Recommendation**
+Berikut adalah daftar 10 rekomendasi film untuk user ID 20
+| No. | movieId | Judul Film                                  | Prediksi Rating |
+|-----|---------|----------------------------------------------|-----------------|
+| 1   | 318     | The Million Dollar Hotel                     | 4.107           |
+| 2   | 858     | Sleepless in Seattle                         | 3.921           |
+| 3   | 58559   | Confession of a Child of the Century         | 3.909           |
+| 4   | 296     | Terminator 3: Rise of the Machines           | 3.909           |
+| 5   | 260     | The 39 Steps                                 | 3.907           |
+| 6   | 2959    | License to Wed                               | 3.904           |
+| 7   | 1213    | The Talented Mr. Ripley                      | 3.901           |
+| 8   | 593     | Solaris                                      | 3.867           |
+| 9   | 527     | Once Were Warriors                           | 3.866           |
+| 10  | 750     | Murder She Said                              | 3.848           |
+## Evaluation Collaborative Filtering
+##### **Metrik Evaluasi yang Digunakan**
+Pada model Collaborative Filtering berbasis neural network, digunakan dua metrik evaluasi utama:
+1.  Mean Absolute Error (MAE)
+- Mengukur rata-rata selisih absolut antara nilai rating prediksi dan rating aktual dan lebih stabil terhadap outlier.
+- Formula:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+        MAE = (1/n) × ∑ᵢ₌₁ⁿ |yᵢ − ŷᵢ
+        
+2.Root Mean Squared Error (RMSE)
+- Mengukur akar dari rata-rata kuadrat selisih antara nilai aktual dan prediksi dan lebih sensitif terhadap kesalahan besar.
+Formula:
+        
+        RMSE = √[(1/n) × ∑ᵢ₌₁ⁿ (yᵢ − ŷᵢ)²]
+#### Hasil Evaluasi Model
+| Metrik | Sebelum Tuning | Setelah Tuning |
+| ------ | -------------- | -------------- |
+| MAE    | 0.1542         | **0.1469**     |
+| RMSE   | 0.1987         | **0.1909**     |
 
+#### Keterkaitan dengan Business Understanding
 
-
+**1. apakah model menjawab problem statement?**
+Ya. Salah satu pernyataan masalah utama adalah bagaimana memberikan rekomendasi yang personal dan relevan bagi pengguna. Collaborative Filtering menyelesaikan ini dengan mempelajari pola interaksi antar pengguna, dan memberikan rekomendasi berdasarkan preferensi pengguna serupa.
+**2. Apakah goals proyek tercapai?**
+Ya. Tujuan proyek adalah memberikan Top-N rekomendasi film yang akurat berdasarkan perilaku pengguna. Hasil evaluasi metrik membuktikan bahwa model dapat memprediksi rating dengan presisi tinggi, sehingga mampu merekomendasikan film yang sangat relevan.
+**3. APakah solusi yang dirancang berdampak?**
+Sangat berdampak. Model ini mampu memberikan rekomendasi bahkan untuk film yang tidak memiliki banyak metadata, selama cukup interaksi pengguna tersedia.
+Dalam konteks bisnis, model ini:
+- Meningkatkan kepuasan pengguna dengan menyarankan film sesuai selera.
+- Meningkatkan retensi pengguna karena pengalaman personalisasi yang lebih kuat.
+- Membantu platform layanan film untuk menargetkan konten yang tepat secara otomatis.
+## Kesimpulan akhir
+Berdasarkan evaluasi kedua model, strategi implementasi yang disarankan adalah menggunakan Content-Based Filtering (CBF) untuk pengguna baru karena cepat dan tetap relevan tanpa perlu data interaksi, serta menggunakan Collaborative Filtering (CF) untuk pengguna aktif dengan riwayat rating yang cukup agar rekomendasi lebih personal. Kombinasi keduanya dalam pendekatan hybrid akan meningkatkan fleksibilitas dan akurasi sistem, sementara retraining model CF secara berkala dan memperkaya fitur CBF dapat menjaga performa dan relevansi rekomendasi seiring waktu.
+- CBF unggul dalam efisiensi dan cold-start.
+- CF unggul dalam personalisasi dan akurasi rekomendasi.
+- Kombinasi keduanya akan memberikan sistem rekomendasi yang kuat, fleksibel, dan siap digunakan di dunia nyata.
 
 ![Image](https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e)
 
@@ -451,16 +506,13 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 
 ![Image](https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87)
 
-
-**---Ini adalah bagian akhir laporan---**
+## Referensi
 [1] Y. Zhang and X. Chen, "Explainable Recommendation: A Survey and New Perspectives," *Foundations and Trends® in Information Retrieval*, vol. 14, no. 1, pp. 1–101, 2020. [Online]. Available: https://doi.org/10.1561/1500000066
 
 [2] C. C. Aggarwal, *Recommender Systems: The Textbook*, Springer, 2016. [Online]. Available: https://doi.org/10.1007/978-3-319-29659-3
 
 [3] J. Chen, H. Dong, X. Wang, F. Feng, M. Wang, and X. He, "Bias and Debias in Recommender System: A Survey and Future Directions," *arXiv preprint*, arXiv:2010.03240, 2020. [Online]. Available: https://arxiv.org/abs/2010.03240
 
-[4] K. R. Sari, W. Suharso, and Y. Azhar, "Pembuatan Sistem Rekomendasi Film dengan Menggunakan Metode Item-Based Collaborative Filtering pada Apache Mahout," *Repositor*, vol. 2, no. 6, pp. 767–774, 2020. [Online]. Available: https://ejournal.umm.ac.id/index.php/repositor/article/view/30715
+[4] K. R. Sari, W. Suharso, and Y. Azhar, "Pembuatan Sistem Rekomendasi Film dengan Menggunakan Metode Item-Based Collaborative Filtering pada Apache Mahout," *Repositor*, vol. 2, no. 6, pp. 767–774, 2020. [Online]. Available: https://ejournal.umm.ac.id/index.php/repositor/article/view/30715.
+**---Ini adalah bagian akhir laporan---**
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
