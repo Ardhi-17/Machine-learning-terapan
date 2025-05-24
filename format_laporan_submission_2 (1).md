@@ -9,13 +9,13 @@ Proyek ini penting untuk diselesaikan karena sistem rekomendasi bukan hanya alat
 
 Hasil riset juga menunjukkan bahwa sistem rekomendasi berbasis pembelajaran mesin telah berhasil diterapkan secara luas dalam dunia industri dan akademik. Zhang dan Chen [[1]](https://www.nowpublishers.com/article/Details/INR-066) menyoroti pentingnya aspek explainability dalam sistem rekomendasi, sedangkan Aggarwal [[2]](https://link.springer.com/book/10.1007/978-3-319-29659-3) menyusun kerangka teoritis dan praktis dalam pengembangan sistem rekomendasi modern. Selain itu, Sari et al. [[4]](https://ejournal.umm.ac.id/index.php/repositor/article/view/30715) telah membuktikan efektivitas metode item-based collaborative filtering dalam studi kasus di platform film lokal. Dengan latar belakang tersebut, proyek ini diharapkan tidak hanya menjadi solusi praktis, tetapi juga kontribusi ilmiah dalam pengembangan sistem cerdas untuk rekomendasi film.
 
-#### **Pentingnya Proyek Ini**
+### **Pentingnya Proyek Ini**
 1. Mengatasi Overload Informasi: Dengan banyaknya pilihan film, pengguna sering kali merasa kewalahan dan kesulitan dalam menemukan film yang sesuai dengan selera mereka.
 2. Personalisasi Pengalaman: Sistem rekomendasi memungkinkan personalisasi, yang dapat meningkatkan kepuasan dan loyalitas pengguna terhadap platform.
 3. Efisiensi Waktu: Dengan rekomendasi yang tepat, pengguna dapat menghemat waktu dalam mencari film yang ingin ditonton.
 4. Pemanfaatan Data: Data rating dan metadata film yang tersedia dalam jumlah besar memberikan peluang untuk penerapan machien learning secara optimal.
 
-#### **Metodologi yang digunakan**
+### **Metodologi yang digunakan**
 Proyek ini akan menggabungkan metode content-based filtering dan collaborative filtering untuk membangun sistem rekomendasi yang efektif. Content-based filtering menyarankan film berdasarkan kemiripan konten (seperti genre), sedangkan collaborative filtering mempertimbangkan perilaku pengguna lain yang mirip. Kombinasi kedua metode ini diharapkan dapat meningkatkan akurasi dan relevansi rekomendasi yang diberikan kepada pengguna.
 
 ## Business Understanding
@@ -59,6 +59,7 @@ Dataset yang digunakan dalam proyek ini adalah data yang berisikan variabel vari
 
 
 Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
+
 **1. Dataset Rating Penggunan (rating.csv)**
 | Variabel   | Deskripsi                                                  |
 |------------|-------------------------------------------------------------|
@@ -95,6 +96,7 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 | vote_average          | Rata-rata skor rating pengguna (skala 1–10)                 |
 | vote_count            | Jumlah total vote atau ulasan pengguna                      |
 
+
 **Missing Value pada dataset movies_metadata.csv**
 | Kolom                  | Jumlah Missing Value |
 |------------------------|----------------------|
@@ -126,7 +128,7 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 *Pada dataset rating.csv, tidak ditemukan missing value.*
 
 ###  Exploratory Data Analysis
-#### Analisis Distribusi Data
+### Analisis Distribusi Data
 pada bagian ini, kita akan melakukan explorasi pada dataset untuk mendapatkan insight yang dibutuhkan dalam pembuatan model nantinya.
 
 <p align="center">
@@ -135,9 +137,6 @@ pada bagian ini, kita akan melakukan explorasi pada dataset untuk mendapatkan in
 <p align="center"><em>Gambar:Presentasi Distribusi Rating</em></p>
 
 **Gambar ini menunjukkan bahwa Rating 4.0 adalah yang paling umum diberikan, mencakup 26.6% dari total rating, Rating 3.0 di posisi kedua dengan 19.9% dari total rating dan Mayoritas rating (>75%) berada di range 3.0-5.0, menunjukkan kecenderungan rating positif**
-
-
-
 
 
 <p align="center">
@@ -249,16 +248,14 @@ Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebaga
 ## Modeling
 Sistem rekomendasi dikembangkan untuk menjawab permasalahan utama yaitu bagaimana membantu pengguna menemukan film yang relevan dan meningkatkan engagement pada platform digital. Dalam proyek ini, dua pendekatan sistem rekomendasi diterapkan:
 Tujuan:
-
--  Memberikan Top-N rekomendasi film untuk setiap pengguna.
-
+- Memberikan Top-N rekomendasi film untuk setiap pengguna.
 - Membandingkan dua pendekatan yang berbeda untuk melihat efektivitas dan keakuratannya dalam memberikan rekomendasi.
 
 ### 1. Model Content Based Filtering
 Content-Based Filtering (CBF) merupakan metode rekomendasi yang menyarankan film kepada pengguna berdasarkan atribut konten film itu sendiri, seperti genre, sutradara, atau aktor. Pada implementasi ini, sistem menggunakan genre sebagai satu-satunya fitur utama, tanpa melibatkan sinopsis atau teks deskriptif lain seperti overview.
 
 Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pengguna sebelumnya, lalu menyarankan film-film tersebut menggunakan perhitungan cosine similarity terhadap vektor genre.
-##### **Langkah-langkah Pengerjaan**
+### **Langkah-langkah Pengerjaan**
 1. Persiapan Data
 -  Menghapus entri film yang duplikat berdasarkan movieId agar setiap film hanya muncul satu kali.
 - Mengonversi kolom genres yang sebelumnya berbentuk list menjadi string (dipisahkan koma) agar dapat diproses dengan TF-IDF.
@@ -270,7 +267,7 @@ Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pe
 - Hasil perhitungan disimpan dalam bentuk DataFrame, dengan nama film sebagai index dan kolom.
 4. Fungsi Rekomendasi
 - Membuat fungsi film_recommendations() yang Menerima input judul film dan mengembalikan daftar Top-10 film lain yang paling mirip berdasarkan genre
-#### **Parameter yang Digunakan**
+### **Parameter yang Digunakan**
 1. TfidfVectorizer(): default parameter
 2. cosine_similarity(): perhitungan tanpa parameter tambahan (standard sklearn)
 
@@ -283,7 +280,7 @@ Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pe
 | Index & Kolom Similarity DF   | `title` sebagai indeks dan kolom                                          |
 
 
-##### **Top-N Recommendation Sebagai Output**
+### **Top-N Recommendation Sebagai Output**
 Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi dengan nomor urutan (Top-10):
 | No. | Judul Film                     | Genre            |
 |-----|--------------------------------|------------------|
@@ -298,7 +295,7 @@ Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi denga
 | 9   | Sin City: A Dame to Kill For   | Crime, Thriller  |
 | 10  | Get Carter                     | Crime, Thriller  |
 
-##### **Kelebihan dan Kekurangan**
+### **Kelebihan dan Kekurangan**
 **Kelebihan:**
 - Cocok untuk sistem rekomendasi awal atau saat data rating tidak tersedia.
 - Rekomendasi konsisten untuk genre yang disukai pengguna.
@@ -342,7 +339,7 @@ Ya. Model ini berguna dalam situasi cold-start, yaitu ketika data interaksi peng
 Collaborative Filtering adalah teknik sistem rekomendasi yang menyarankan film berdasarkan kesamaan perilaku atau preferensi pengguna lain. Pendekatan ini berasumsi bahwa pengguna yang menyukai film yang sama kemungkinan besar akan menyukai film serupa lainnya. Model ini tidak menggunakan konten film secara langsung, melainkan mengandalkan pola interaksi antara pengguna dan item (dalam hal ini: rating film).
 
 Model dikembangkan dengan pendekatan embedding-based neural network, yaitu memetakan userId dan movieId ke dalam ruang vektor berdimensi rendah, dan menggunakan hasil interaksinya untuk memprediksi rating yang diberikan.
-##### **Langkah-langkah Pengerjaan**
+### **Langkah-langkah Pengerjaan**
 1. Persiapan dan Encoding Data
 - Dataset df_movies_ratings telah melalui tahap preprocessing sebelumnya.
 - userId dan movieId di-encode menjadi integer menggunakan mapping dictionary agar bisa digunakan dalam embedding layer.
@@ -359,7 +356,7 @@ Model dibangun dengan class RecommenderNet yang merupakan turunan dari tf.keras.
 Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
 - Loss function: Mean Squared Error (MSE)
 - Optimizer: Adam
-##### **Parameter yang digunakan**
+### **Parameter yang digunakan**
 **Parameter Arsitektur Model (RecommenderNet)**
 | Parameter              | Nilai / Penjelasan                                                           |
 |------------------------|------------------------------------------------------------------------------|
@@ -404,7 +401,7 @@ Hasil Training Model
 </p>
 
 
- ##### **Modeling dengan Tuning Hyperparameter**
+ ### **Modeling dengan Tuning Hyperparameter**
  
  Tuning hyperparameter bertujuan untuk meningkatkan performa model dengan menemukan kombinasi parameter terbaik. Pada tahap ini dilakukan grid search manual terhadap beberapa kombinasi hyperparameter utama yang mempengaruhi kinerja model embedding neural network untuk sistem rekomendasi.
  
@@ -418,7 +415,7 @@ Hasil Training Model
 
 Sebanyak 16 kombinasi total diuji (4 parameter × 2 nilai masing-masing).
 
-##### Prosedur Tuning
+### Prosedur Tuning
 1. Model dibangun dengan kombinasi parameter tertentu menggunakan class RecommenderNet.
 2. Model dikompilasi dengan:
 - Loss function: MeanSquaredError
@@ -479,7 +476,7 @@ Setelah dilakukan tuning hyperparameter, nilai MAE pada data validasi turun dari
 
 
 Maka, untuk Top-N recommendation akan digunakan model setelah tuning hyperparameter.
-##### **Top-N Recommendation**
+#### **Top-N Recommendation**
 
 Berikut adalah daftar 10 rekomendasi film untuk user ID 20
 
@@ -498,7 +495,7 @@ Berikut adalah daftar 10 rekomendasi film untuk user ID 20
 
 ## Evaluation Collaborative Filtering
 
-##### **Metrik Evaluasi yang Digunakan**
+### **Metrik Evaluasi yang Digunakan**
 Pada model Collaborative Filtering berbasis neural network, digunakan dua metrik evaluasi utama:
 1.  Mean Absolute Error (MAE)
 - Mengukur rata-rata selisih absolut antara nilai rating prediksi dan rating aktual dan lebih stabil terhadap outlier.
@@ -512,7 +509,7 @@ Formula:
         
         RMSE = √[(1/n) × ∑ᵢ₌₁ⁿ (yᵢ − ŷᵢ)²]
 
-#### Hasil Evaluasi Model
+### Hasil Evaluasi Model
 
 | Metrik | Sebelum Tuning | Setelah Tuning |
 | ------ | -------------- | -------------- |
@@ -527,7 +524,7 @@ Formula:
 
 Gambar di atas menunjukkan bahwa model hasil tuning hyperparameter memiliki performa lebih baik dibandingkan model awal, dengan RMSE validasi turun dari 0.1987 menjadi 0.1909 dan MAE validasi dari 0.1542 menjadi 0.1469. Grafik memperlihatkan penurunan error yang konsisten pada kedua metrik selama proses training, terutama pada model tuning yang menunjukkan kurva lebih landai dan stabil. Hal ini menandakan bahwa tuning berhasil meningkatkan akurasi model sekaligus mengurangi risiko overfitting, menjadikan model lebih andal untuk digunakan dalam sistem rekomendasi.
 
-#### Keterkaitan dengan Business Understanding
+### Keterkaitan dengan Business Understanding
 
 **1. apakah model menjawab problem statement?**
 Ya. Salah satu pernyataan masalah utama adalah bagaimana memberikan rekomendasi yang personal dan relevan bagi pengguna. Collaborative Filtering menyelesaikan ini dengan mempelajari pola interaksi antar pengguna, dan memberikan rekomendasi berdasarkan preferensi pengguna serupa.
@@ -544,8 +541,6 @@ Berdasarkan evaluasi kedua model, strategi implementasi yang disarankan adalah m
 - CBF unggul dalam efisiensi dan cold-start.
 - CF unggul dalam personalisasi dan akurasi rekomendasi.
 - Kombinasi keduanya akan memberikan sistem rekomendasi yang kuat, fleksibel, dan siap digunakan di dunia nyata.
-
-
 
 
 ## Referensi
