@@ -98,6 +98,37 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 | vote_average          | Rata-rata skor rating pengguna (skala 1–10)                 |
 | vote_count            | Jumlah total vote atau ulasan pengguna                      |
 
+**Missing Value pada dataset movies_metadata.csv**
+| Kolom                  | Jumlah Missing Value |
+|------------------------|----------------------|
+| adult                  | 0                    |
+| belongs_to_collection  | 40.972               |
+| budget                 | 0                    |
+| genres                 | 0                    |
+| homepage               | 37.684               |
+| id                     | 0                    |
+| imdb_id                | 17                   |
+| original_language      | 11                   |
+| original_title         | 0                    |
+| overview               | 954                  |
+| popularity             | 5                    |
+| poster_path            | 386                  |
+| production_companies   | 3                    |
+| production_countries   | 3                    |
+| release_date           | 87                   |
+| revenue                | 6                    |
+| runtime                | 263                  |
+| spoken_languages       | 6                    |
+| status                 | 87                   |
+| tagline                | 25.054               |
+| title                  | 6                    |
+| video                  | 6                    |
+| vote_average           | 6                    |
+| vote_count             | 6                    |
+
+*Pada dataset rating.csv, tidak ditemukan missing value.*
+
+
 
 
 
