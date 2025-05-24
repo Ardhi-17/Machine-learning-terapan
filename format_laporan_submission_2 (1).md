@@ -145,7 +145,7 @@ pada bagian ini, kita akan melakukan explorasi pada dataset untuk mendapatkan in
   <em>Gambar: Distribusi Rating Pengguna</em>
 </p>
 
-**Berdasarkan visualisasi distribusi rating di bawah, terlihat distribusi yang tidak merata (timpang), Hal ini menunjukkan bahwa pengguna cenderung memberikan rating yang lebih tinggi (3.0-5.0), Rating 0.5 memiliki frekuensi terendah (sekitar 1,500 rating), Rating 1.5 dan 2.5 juga relatif rendah (masing-masing sekitar 2,000 dan 5,000 rating), Rating 3.0 memiliki frekuensi tinggi (sekitar 20,000 rating), Rating 4.0 memiliki frekuensi tertinggi (sekitar 25,000 rating) dan Rating 5.0 memiliki frekuensi moderat (sekitar 13,000 rating)**
+**Berdasarkan visualisasi distribusi rating di atas, terlihat distribusi yang tidak merata (timpang), Hal ini menunjukkan bahwa pengguna cenderung memberikan rating yang lebih tinggi (3.0-5.0), Rating 0.5 memiliki frekuensi terendah (sekitar 1,500 rating), Rating 1.5 dan 2.5 juga relatif rendah (masing-masing sekitar 2,000 dan 5,000 rating), Rating 3.0 memiliki frekuensi tinggi (sekitar 20,000 rating), Rating 4.0 memiliki frekuensi tertinggi (sekitar 25,000 rating) dan Rating 5.0 memiliki frekuensi moderat (sekitar 13,000 rating)**
 
 
 <p align="center">
@@ -153,7 +153,7 @@ pada bagian ini, kita akan melakukan explorasi pada dataset untuk mendapatkan in
   <em>Gambar: Distribusi Genre Film</em>
 </p>
 
-**Berdasarkan visualisasi distribusi genre film di bawah, dapat dilihat beberapa insight penting dimana. Dimana genre Drama mendominasi dengan jumlah film terbanyak (sekitar 20,000 film), Comedy dan Action menempati posisi kedua dan ketiga dengan masing-masing sekitar 12,500 dan 7,000 film, Genre-genre seperti Thriller, Romance, dan Horror memiliki jumlah film yang moderat (sekitar 5,000-7,000 film), Genre Documentary, Adventure, dan Mystery memiliki jumlah film yang relatif sedikit (2,500-4,000 film) dan Genre-genre khusus seperti War, Western, dan TV Movie memiliki jumlah film yang sangat sedikit (di bawah 2,000 film)**
+**Berdasarkan visualisasi distribusi genre film di atas, dapat dilihat beberapa insight penting dimana. Dimana genre Drama mendominasi dengan jumlah film terbanyak (sekitar 20,000 film), Comedy dan Action menempati posisi kedua dan ketiga dengan masing-masing sekitar 12,500 dan 7,000 film, Genre-genre seperti Thriller, Romance, dan Horror memiliki jumlah film yang moderat (sekitar 5,000-7,000 film), Genre Documentary, Adventure, dan Mystery memiliki jumlah film yang relatif sedikit (2,500-4,000 film) dan Genre-genre khusus seperti War, Western, dan TV Movie memiliki jumlah film yang sangat sedikit (di bawah 2,000 film)**
 
 ### Pemberian Skor pada film (Weighted Score)
 
