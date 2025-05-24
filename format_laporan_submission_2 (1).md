@@ -128,9 +128,13 @@ Variabel-variabel pada dataset Movie Recommendation ini adalah sebagai berikut:
 
 *Pada dataset rating.csv, tidak ditemukan missing value.*
 
-##Exploratory Data Analysis
+###  Exploratory Data Analysis
+#### Analisis Distribusi Data
 
-![Image](https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f)
+**Grafik menunjukkan bahwa konsumsi energi terbarukan lebih dari dua pertiganya adalah  biomassa—terutama Wood Energy (≈46 %)—disusul hidro konvensional (≈20 %), sementara sumber berpotensi tinggi seperti angin dan surya secara gabungan belum mencapai 10 %.**
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/86c90c65-4e06-492c-9b56-26bac3a6c33f" width="500"/>
+</p>
 
 ![Image](https://github.com/user-attachments/assets/79f2bca7-95d4-4f1d-b20a-d5d5cbfcbfdb)
 
