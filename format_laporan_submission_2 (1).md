@@ -369,6 +369,8 @@ Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
 | `movie_bias`           | Embedding(movie: 2790 x 1) – untuk menangkap kecenderungan film              |
 | `regularization`       | L2 regularization (`keras.regularizers.l2(1e-6)`)                            |
 | `activation`           | Sigmoid – menjaga output dalam skala 0–1                                     |
+
+
 **Parameter Pelatihan Model**
 | Parameter              | Nilai / Penjelasan                                                           |
 |------------------------|------------------------------------------------------------------------------|
