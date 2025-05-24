@@ -231,7 +231,7 @@ Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebaga
 
 4. Menangani Data Duplikat pada kolom `moveId`, data duplikat berjumlah 30 data dan di hapus lalu disisakan baris pertama dari setiap duplikatnya.
 5. Mengurutkan data pengguna berdasarkan ID untuk memudahkan analisa data rating dan movie ID.
-6. 
+   
 | Index | userId | movieId | rating | timestamp  |
 |-------|--------|---------|--------|------------|
 | 180   | 1      | 2716    | 5.0    | 964983414  |
@@ -391,6 +391,19 @@ Hasil Training Model
 | RMSE   | 0.1862     | 0.1987         |
 | MAE    | 0.1435     | 0.1542         |
 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e" width="700"/><br>
+  <em>Gambar: Grafik Perkembangan RMSE Pada Model Selama Training</em>
+</p>
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bed2a555-6d0a-4967-ae71-d00e52f8143f" width="700"/><br>
+  <em>Gambar: Grafik Perkembangan MAE Pada Model Selama Training</em>
+</p>
+
+
  ##### **Modeling dengan Tuning Hyperparameter**
  
  Tuning hyperparameter bertujuan untuk meningkatkan performa model dengan menemukan kombinasi parameter terbaik. Pada tahap ini dilakukan grid search manual terhadap beberapa kombinasi hyperparameter utama yang mempengaruhi kinerja model embedding neural network untuk sistem rekomendasi.
@@ -453,6 +466,18 @@ Perbandingan Sebelum dan Sesudah Tuning
 
 Setelah dilakukan tuning hyperparameter, nilai MAE pada data validasi turun dari 0.1542 menjadi 0.1469, dan nilai RMSE turun dari 0.1987 menjadi 0.1909.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/453dd499-40c8-4929-b676-baa76416bca8" width="800"/><br>
+  <em>Gambar: Grafik Perkembangan RMSE Pada Model Setelah tuning Hyperparameter Selama Training </em>
+</p>
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ff401109-875a-45dc-9329-d5f3473011fa" width="800"/><br>
+  <em>Gambar: Grafik Perkembangan MAE Pada Model Setelah tuning Hyperparameter Selama Training</em>
+</p>
+
+
 Maka, untuk Top-N recommendation akan digunakan model setelah tuning hyperparameter.
 ##### **Top-N Recommendation**
 
@@ -494,6 +519,14 @@ Formula:
 | MAE    | 0.1542         | **0.1469**     |
 | RMSE   | 0.1987         | **0.1909**     |
 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87" width="900"/><br>
+  <em>Gambar: Grafik perbandingan antara Model awal dengan Model setelah di tuning hyperparameter</em>
+</p>
+
+Gambar di atas menunjukkan bahwa model hasil tuning hyperparameter memiliki performa lebih baik dibandingkan model awal, dengan RMSE validasi turun dari 0.1987 menjadi 0.1909 dan MAE validasi dari 0.1542 menjadi 0.1469. Grafik memperlihatkan penurunan error yang konsisten pada kedua metrik selama proses training, terutama pada model tuning yang menunjukkan kurva lebih landai dan stabil. Hal ini menandakan bahwa tuning berhasil meningkatkan akurasi model sekaligus mengurangi risiko overfitting, menjadikan model lebih andal untuk digunakan dalam sistem rekomendasi.
+
 #### Keterkaitan dengan Business Understanding
 
 **1. apakah model menjawab problem statement?**
@@ -512,15 +545,8 @@ Berdasarkan evaluasi kedua model, strategi implementasi yang disarankan adalah m
 - CF unggul dalam personalisasi dan akurasi rekomendasi.
 - Kombinasi keduanya akan memberikan sistem rekomendasi yang kuat, fleksibel, dan siap digunakan di dunia nyata.
 
-![Image](https://github.com/user-attachments/assets/8a99ef59-a01b-46c3-a027-f9a90319749e)
 
-![Image](https://github.com/user-attachments/assets/bed2a555-6d0a-4967-ae71-d00e52f8143f)
 
-![Image](https://github.com/user-attachments/assets/453dd499-40c8-4929-b676-baa76416bca8)
-
-![Image](https://github.com/user-attachments/assets/ff401109-875a-45dc-9329-d5f3473011fa)
-
-![Image](https://github.com/user-attachments/assets/a1a03637-4b94-4013-b886-ead4c6330b87)
 
 ## Referensi
 [1] Y. Zhang and X. Chen, "Explainable Recommendation: A Survey and New Perspectives," *Foundations and Trends® in Information Retrieval*, vol. 14, no. 1, pp. 1–101, 2020. [Online]. Available: https://doi.org/10.1561/1500000066
