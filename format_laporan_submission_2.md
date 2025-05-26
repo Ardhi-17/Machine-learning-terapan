@@ -219,9 +219,6 @@ Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebaga
 
 ## Data Preparation
 
-Tahapan data preparation dilakukan secara sistematis agar data siap digunakan untuk membangun sistem rekomendasi yang akurat dan dapat direproduksi. Berikut adalah penjelasan detail setiap langkah yang dilakukan, sesuai urutan pada file `recommendation_system.ipynb`:
-
-
 Tahapan **Data Preparation** dilakukan secara sistematis agar data siap digunakan untuk membangun sistem rekomendasi yang akurat dan dapat direproduksi. Berikut adalah penjelasan lengkap setiap langkah yang dilakukan:
 
 ### 1. Pemilihan Fitur yang Relevan
@@ -288,9 +285,8 @@ df_final['movie_encoded'] = movie_encoder.fit_transform(df_final['movieId'])
 - Fitur `x` merupakan array 2D berisi pasangan `user_encoded` dan `movie_encoded`.
 - Label `y` diambil dari kolom `ratings` yang telah dinormalisasi ke rentang 0–1 menggunakan rumus berikut:
 
-\\[
-y = \\frac{\\text{rating} - \\text{min rating}}{\\text{max rating} - \\text{min rating}}
-\\]
+`y = (rating - min rating) / (max rating - min rating)`
+
 
 - Proses normalisasi ini penting untuk membuat model neural network lebih stabil dalam proses pelatihan.
 
@@ -300,20 +296,31 @@ x = df_movies_ratings[['user_encoded', 'movie_encoded']].values
 y = df_movies_ratings['ratings'].apply(lambda x: (x - min_rating) / (max_rating - min_rating)).values
 ```
 
-### 10. Pengacakan dan Pembagian Data Latih–Validasi
+### 10. Pengacakan Dataset
 
-- Dataset df_movies_ratings diacak dengan sample(frac=1) agar tidak ada pola tertentu dalam urutan data.
-- Pembagian data dilakukan secara manual menjadi 80% untuk data latih dan 20% untuk data validasi, berdasarkan jumlah baris dataset.
+- Dataset `df_movies_ratings` diacak menggunakan `sample(frac=1)` agar distribusi data lebih merata dan tidak mengikuti urutan tertentu.
+- Parameter `random_state=42` digunakan untuk memastikan hasil pengacakan dapat direproduksi dengan hasil yang sama setiap kali dijalankan.
 
+```python
 # Mengacak dataset
 df_movies_ratings = df_movies_ratings.sample(frac=1, random_state=42)
+```
 
-# Split manual 80:20
+### 11. Pembagian Data Latih dan Validasi
+
+- Setelah pengacakan, dataset dibagi secara manual menjadi 80% untuk data latih (x_train, y_train) dan 20% untuk data validasi (x_val, y_val).
+- Pembagian dilakukan berdasarkan indeks panjang dataset.
+
+Split manual menjadi 80:20
+```python
 train_indices = int(0.8 * len(df_movies_ratings))
 x_train, x_val = x[:train_indices], x[train_indices:]
 y_train, y_val = y[:train_indices], y[train_indices:]
+```
+- x_train dan y_train digunakan untuk proses pelatihan model.
+-  x_val dan y_val digunakan untuk mengevaluasi performa model terhadap data yang belum dilihat.
 
-Dengan pendekatan ini, kita memiliki kendali penuh terhadap struktur data dan memastikan proses pembelajaran berlangsung secara efisien dan konsisten.
+Dengan pendekatan ini, proses pemisahan data dilakukan dengan kontrol penuh dan hasil dapat direproduksi secara konsisten.
 
 
 
