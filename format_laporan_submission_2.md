@@ -222,107 +222,159 @@ Setelah melakukan explorasi data. didapatkan insight dari Eksplorasi Data sebaga
 Tahapan **Data Preparation** dilakukan secara sistematis agar data siap digunakan untuk membangun sistem rekomendasi yang akurat dan dapat direproduksi. Berikut adalah penjelasan lengkap setiap langkah yang dilakukan:
 
 ### 1. Pemilihan Fitur yang Relevan
-- Dari dataset `movies_metadata.csv`, dipilih fitur penting: `movieId`, `title`, `genres`, `vote_average`, dan `vote_count`.
+- Buat dataframe baru dengan nama df_movies_selected untuk prepocessing dan dataset tersebut, dipilih fitur penting: `movieId`, `title`, `genres`, `vote_average`, dan `vote_count`.
 - Pemilihan fitur ini dilakukan untuk memfokuskan proses analisis dan modeling pada atribut yang relevan terhadap sistem rekomendasi.
 
 ### 2. Penanganan Missing Value
-- Diperiksa missing value pada kolom `title`, `vote_average`, dan `vote_count`.
+- Diperiksa missing value pada kolom `title`, `vote_average`, dan `vote_count` di dataset df_movies_selected.
 - Baris dengan nilai kosong pada kolom-kolom tersebut dihapus untuk menghindari gangguan saat pemodelan.
-- Contoh baris yang dihapus:
+- Baris yang dihapus:
 
-| Index  | movieId | genres                                      | title | vote_average | vote_count |
-|--------|---------|---------------------------------------------|-------|--------------|------------|
-| 19729  | 82663   | [{'id': 28, 'name': 'Action'}, ...]         | NaN   | NaN          | NaN        |
+| Index  | movieId | genres                                                                                     | title | vote_average | vote_count |
+|--------|---------|--------------------------------------------------------------------------------------------|-------|--------------|------------|
+| 19729  | 82663   | [{'id': 28, 'name': 'Action'}, {'id': 53, 'name': 'Thriller'}]                             | NaN   | NaN          | NaN        |
+| 29502  | 122662  | [{'id': 16, 'name': 'Animation'}, {'id': 878, 'name': 'Science Fiction'}]                  | NaN   | NaN          | NaN        |
+| 35586  | 249260  | [{'id': 10770, 'name': 'TV Movie'}, {'id': 28, 'name': 'Action'}]                          | NaN   | NaN          | NaN        |
+
 
 ### 3. Penanganan Data Duplikat
-- Pemeriksaan duplikasi dilakukan berdasarkan kolom `movieId`.
-- Sebanyak 30 data duplikat ditemukan dan hanya satu yang dipertahankan untuk memastikan setiap film unik.
+- Pemeriksaan duplikasi dilakukan berdasarkan kolom `movieId` pada dataset df_movies_selected.
+- Sebanyak 30 data duplikat ditemukan dan hanya satu yang dipertahankan untuk setiap duplikatnya agar memastikan setiap film unik.
 
 ### 4. Pengurutan Data
 - Dataset `ratings` diurutkan berdasarkan `userId`.
-- Dataset `movies_selected` diurutkan berdasarkan `movieId`.
+- Dataset `df_movies_selected` diurutkan berdasarkan `movieId`.
 - Tujuan pengurutan ini adalah untuk mempermudah transformasi data dan pembacaan model.
 
-### 5. Konversi Format Genre
-- Kolom `genres` awalnya dalam bentuk list of dictionary seperti:
+### 5. Ubah fitur genre ke dalam bentuk list
+pada df_movies_selected, ubah fitur genre ke dalam bentuk list. Proses ini menggunakan `literal_eval` dan sangat penting untuk vektorisasi dalam metode content-based filtering.
+| Index  | Genres                              |
+|--------|-------------------------------------|
+| 4342   | [Drama, Crime]                      |
+| 12947  | [Drama, Comedy]                     |
+| 17     | [Crime, Comedy]                     |
+| 474    | [Action, Thriller, Crime]           |
+| 256    | [Adventure, Action, Science Fiction]|
+| 45078  | [Fantasy, Drama]                    |
+| 45273  | [Drama]                             |
+| 21891  | [Drama, Romance]                    |
+| 45398  | [Romance, Comedy]                   |
+| 20189  | [Fantasy, Drama]                    |
 
-```python
-"[{'id': 28, 'name': 'Action'}, {'id': 53, 'name': 'Thriller'}]"
-```
-
-- Diubah menjadi list of string seperti:
-
-```python
-['Action', 'Thriller']
-```
-
-- Proses ini menggunakan `literal_eval` dan sangat penting untuk vektorisasi dalam metode content-based filtering.
 
 ### 6. Penggabungan Dataset
-- Dataset `ratings` digabung dengan dataset `movies_selected` berdasarkan `movieId`.
+- Dataset `df_ratings` digabung dengan dataset `df_movies_selected` berdasarkan `movieId`.
 - Setelah penggabungan, fitur yang tidak relevan seperti `timestamp`, `vote_average`, dan `vote_count` dihapus.
 
 ### 7. Shuffling Dataset
-- Dataset akhir diacak menggunakan `shuffle()` dari `sklearn.utils` untuk menghindari urutan data yang bias.
+- buat dataset baru dengan nama df_final. Dataset akhir ini diacak menggunakan `shuffle()` dari `sklearn.utils` untuk menghindari urutan data yang bias.
 - Diambil 30.000 baris secara acak sebagai dataset akhir (`df_final`) yang akan digunakan dalam modeling.
 
-### 8. Encoding Fitur Kategorikal
-- Encoding dilakukan pada kolom `userId` dan `movieId` menggunakan teknik `LabelEncoder` untuk keperluan *neural network* atau *embedding-based recommendation*.
+### Preprocessing pada Model Content Based Filtering
+
+### 1. Buat dataframe baru dengan nama df_cbf hasil copy dari dataframe df_final
+
+### 2. Urutkan data berdasarkan kolom movieID untuk memudahkan modeling
+
+### 3. Cek data terduplikat
+cek data terduplikat pada kolom movieID dan ditemukan sebanyak 27457 data terduplikat. Hapus data duplikat yang ditemukan pada kolom movieID
+
+### 4. Konversi Data Series Menjadi List
 
 ```python
-from sklearn.preprocessing import LabelEncoder
+# Mengonversi data series 'movieId' menjadi dalam bentuk list
+movie_id = df_cbf['movieId'].tolist()
 
-user_encoder = LabelEncoder()
-movie_encoder = LabelEncoder()
+# Mengonversi data series 'title' menjadi dalam bentuk list 
+movie_name = df_cbf['title'].tolist()
 
-df_final['user_encoded'] = user_encoder.fit_transform(df_final['userId'])
-df_final['movie_encoded'] = movie_encoder.fit_transform(df_final['movieId'])
+# Mengonversi data series 'genres' menjadi dalam bentuk list
+movie_genres = df_cbf['genres'].tolist()
 ```
 
-### 9. Membuat Variabel Fitur dan Label
+### 5. Membuat DataFrame untuk Content-Based Filtering
 
-- Setelah melakukan encoding pada `userId` dan `movieId`, dilakukan pembentukan variabel fitur `x` dan label `y` untuk kebutuhan training model.
-- Fitur `x` merupakan array 2D berisi pasangan `user_encoded` dan `movie_encoded`.
-- Label `y` diambil dari kolom `ratings` yang telah dinormalisasi ke rentang 0–1 menggunakan rumus berikut:
-
-`y = (rating - min rating) / (max rating - min rating)`
-
-
-- Proses normalisasi ini penting untuk membuat model neural network lebih stabil dalam proses pelatihan.
+DataFrame `movies_cbf_df` dibuat untuk menampung tiga kolom penting: `movie_id`, `title`, dan `genres`. Data ini merupakan hasil konversi dari Series ke list, dan disusun ulang agar siap digunakan pada proses TF-IDF dan cosine similarity.
 
 ```python
-# Membuat variabel fitur dan label
-x = df_movies_ratings[['user_encoded', 'movie_encoded']].values
-y = df_movies_ratings['ratings'].apply(lambda x: (x - min_rating) / (max_rating - min_rating)).values
+movies_cbf_df = pd.DataFrame({
+    'movie_id': movie_id,
+    'title': movie_name,
+    'genres': movie_genres
+})
 ```
 
-### 10. Pengacakan Dataset
-
-- Dataset `df_movies_ratings` diacak menggunakan `sample(frac=1)` agar distribusi data lebih merata dan tidak mengikuti urutan tertentu.
-- Parameter `random_state=42` digunakan untuk memastikan hasil pengacakan dapat direproduksi dengan hasil yang sama setiap kali dijalankan.
+### 6. Ekstraksi Fitur dengan TF-IDF
+Sebelum melakukan vektorisasi teks, kolom `genres` pada DataFrame `movies_cbf_df` diubah dari format list menjadi string yang dipisahkan dengan koma. Hal ini diperlukan agar data dapat diproses oleh TF-IDF Vectorizer.
 
 ```python
-# Mengacak dataset
-df_movies_ratings = df_movies_ratings.sample(frac=1, random_state=42)
+# Salin data
+data_cbf = movies_cbf_df
+
+# Ubah list genre menjadi string
+data_cbf['genres'] = data_cbf['genres'].apply(
+    lambda x: ', '.join(x) if isinstance(x, list) and len(x) > 0 else ''
+)
 ```
 
-### 11. Pembagian Data Latih dan Validasi
+### 7. Inisialisasi dan Penerapan TF-IDF Vectorizer
 
-- Setelah pengacakan, dataset dibagi secara manual menjadi 80% untuk data latih (x_train, y_train) dan 20% untuk data validasi (x_val, y_val).
-- Pembagian dilakukan berdasarkan indeks panjang dataset.
+Setelah data genre diformat sebagai string, proses dilanjutkan dengan inisialisasi dan pelatihan TF-IDF Vectorizer. TF-IDF digunakan untuk mengubah data teks genre menjadi representasi numerik berbasis bobot kata.
 
-Split manual menjadi 80:20
 ```python
-train_indices = int(0.8 * len(df_movies_ratings))
-x_train, x_val = x[:train_indices], x[train_indices:]
-y_train, y_val = y[:train_indices], y[train_indices:]
+# Inisialisasi TF-IDF Vectorizer
+tf_cbf = TfidfVectorizer()
+
+# Melatih model TF-IDF pada kolom 'genres'
+tf_cbf.fit(data_cbf["genres"])
 ```
-- x_train dan y_train digunakan untuk proses pelatihan model.
--  x_val dan y_val digunakan untuk mengevaluasi performa model terhadap data yang belum dilihat.
 
-Dengan pendekatan ini, proses pemisahan data dilakukan dengan kontrol penuh dan hasil dapat direproduksi secara konsisten.
+### 8. Transformasi TF-IDF ke Matriks dan DataFrame
 
+Kolom `genres` ditransformasikan menjadi matriks TF-IDF untuk merepresentasikan bobot genre setiap film. Matriks ini kemudian dikonversi ke bentuk DataFrame (`tfidf_df`) dengan judul film sebagai indeks dan genre sebagai kolom.
+Hasil ini akan digunakan dalam perhitungan kemiripan antar film pada tahap selanjutnya.
+```python
+tfidf_matrix = tf_cbf.fit_transform(data_cbf["genres"])
+```
 
+### Preprocessing Pada Model Collaborative Filtering
+
+### 1. Mengambil Daftar Unik userId untuk proses encoding
+User ID diambil tanpa duplikasi menggunakan `unique().tolist()`:
+- `user_ids = df_movies_ratings['userId'].unique().tolist()`
+
+### 2. Melakukan Encoding userId
+Mapping dilakukan dua arah:
+- `user_to_user_encoded`: mengubah userId asli ke nilai numerik
+- `user_encoded_to_user`: mengembalikan nilai numerik ke userId asli
+
+### 3. Melakukan Encoding movieId
+Langkah yang sama dilakukan untuk `movieId`:
+- `movie_to_movie_encoded`: mengubah movieId asli ke bentuk numerik
+- `movie_encoded_to_movie`: mengembalikannya ke ID aslinya
+
+### 4. Menambahkan Kolom Encoding ke DataFrame
+Hasil encoding dimasukkan ke dalam kolom baru di `df_movies_ratings`:
+- `user_encoded`
+- `movie_encoded`
+
+### 5. Menentukan Parameter untuk Model
+Beberapa parameter penting ditentukan untuk kebutuhan model embedding:
+- `n_users`: jumlah total pengguna unik
+- `n_movies`: jumlah total film unik
+- `embedding_size`: ukuran dimensi vektor embedding (misalnya 50)
+
+### 6. Mengacak Dataset
+Dataset `df_movies_ratings` diacak menggunakan `sample(frac=1)` agar distribusi data lebih merata dan tidak bergantung pada urutan sebelumnya.
+
+### 7. Membentuk Variabel Fitur dan Label
+- `x`: berisi pasangan nilai `user_encoded` dan `movie_encoded` dalam bentuk array 2D.
+- `y`: berisi skor rating yang telah dinormalisasi ke rentang 0–1.
+
+### 8. Membagi Data Menjadi Train dan Validation
+Dataset dibagi menjadi dua:
+- **80%** data untuk pelatihan (`x_train`, `y_train`)
+- **20%** data untuk validasi (`x_val`, `y_val`)
 
 ## Modeling
 Sistem rekomendasi dikembangkan untuk menjawab permasalahan utama yaitu bagaimana membantu pengguna menemukan film yang relevan dan meningkatkan engagement pada platform digital. Dalam proyek ini, dua pendekatan sistem rekomendasi diterapkan:
@@ -332,20 +384,8 @@ Tujuan:
 
 ### 1. Model Content Based Filtering
 Content-Based Filtering (CBF) merupakan metode rekomendasi yang menyarankan film kepada pengguna berdasarkan atribut konten film itu sendiri, seperti genre, sutradara, atau aktor. Pada implementasi ini, sistem menggunakan genre sebagai satu-satunya fitur utama, tanpa melibatkan sinopsis atau teks deskriptif lain seperti overview.
-
 Model akan mencari film-film dengan genre yang mirip dengan film yang disukai pengguna sebelumnya, lalu menyarankan film-film tersebut menggunakan perhitungan cosine similarity terhadap vektor genre.
-### **Langkah-langkah Pengerjaan**
-1. Persiapan Data
--  Menghapus entri film yang duplikat berdasarkan movieId agar setiap film hanya muncul satu kali.
-- Mengonversi kolom genres yang sebelumnya berbentuk list menjadi string (dipisahkan koma) agar dapat diproses dengan TF-IDF.
-2. Ekstraksi Fitur: TF-IDF pada Genre
-- Menggunakan TfidfVectorizer dari sklearn untuk mengubah data genres menjadi matriks numerik.
-- Matriks hasil ekstraksi memiliki dimensi (2542, 22), artinya terdapat 2542 film dan 22 genre unik yang terekstrak.
-3. Perhitungan Kemiripan
-- Menggunakan cosine similarity untuk menghitung kemiripan antar film berdasarkan genre.
-- Hasil perhitungan disimpan dalam bentuk DataFrame, dengan nama film sebagai index dan kolom.
-4. Fungsi Rekomendasi
-- Membuat fungsi film_recommendations() yang Menerima input judul film dan mengembalikan daftar Top-10 film lain yang paling mirip berdasarkan genre
+
 ### **Parameter yang Digunakan**
 1. TfidfVectorizer(): default parameter
 2. cosine_similarity(): perhitungan tanpa parameter tambahan (standard sklearn)
@@ -384,26 +424,19 @@ Berikut adalah tabel rekomendasi film "Pulp Fiction" yang sudah dilengkapi denga
 - Tidak mempertimbangkan rating pengguna atau kualitas film (bisa saja merekomendasikan film dengan rating rendah).
 - Tidak mampu mengidentifikasi preferensi non-genre seperti gaya penyutradaraan atau sinematografi.
 - Film dengan genre unik atau langka memiliki potensi minim untuk direkomendasikan.
-- 
+  
 
 ### 2. Model Collaborative Filtering
 Collaborative Filtering adalah teknik sistem rekomendasi yang menyarankan film berdasarkan kesamaan perilaku atau preferensi pengguna lain. Pendekatan ini berasumsi bahwa pengguna yang menyukai film yang sama kemungkinan besar akan menyukai film serupa lainnya. Model ini tidak menggunakan konten film secara langsung, melainkan mengandalkan pola interaksi antara pengguna dan item (dalam hal ini: rating film).
-
 Model dikembangkan dengan pendekatan embedding-based neural network, yaitu memetakan userId dan movieId ke dalam ruang vektor berdimensi rendah, dan menggunakan hasil interaksinya untuk memprediksi rating yang diberikan.
-### **Langkah-langkah Pengerjaan**
-1. Persiapan dan Encoding Data
-- Dataset df_movies_ratings telah melalui tahap preprocessing sebelumnya.
-- userId dan movieId di-encode menjadi integer menggunakan mapping dictionary agar bisa digunakan dalam embedding layer.
-- Kolom ratings dinormalisasi ke skala 0–1 agar sesuai dengan output sigmoid model.
-2. Pembagian Data
-Dataset diacak dan dibagi menjadi 80% data pelatihan dan 20% data validasi.
-3. Arsitektur Model Neural Network
+
+**Arsitektur Model Neural Network**
 Model dibangun dengan class RecommenderNet yang merupakan turunan dari tf.keras.Model. Arsitektur terdiri dari:
 - User Embedding Layer dan Movie Embedding Layer
 - User Bias dan Movie Bias (untuk menangkap kecenderungan masing-masing)
 - Dot Product antara user dan movie vector
 - Aktivasi Sigmoid di output
-4. Pelatihan Model
+**Pelatihan Model**
 Model dilatih selama 50 epoch dengan batch size = 64, menggunakan:
 - Loss function: Mean Squared Error (MSE)
 - Optimizer: Adam
@@ -475,8 +508,6 @@ Sebanyak 16 kombinasi total diuji (4 parameter × 2 nilai masing-masing).
 3. Callbacks digunakan untuk meningkatkan efisiensi pelatihan:
 - EarlyStopping: menghentikan pelatihan jika tidak ada perbaikan pada val_loss dalam 5 epoch.
 - ReduceLROnPlateau: menurunkan learning rate secara otomatis jika val_loss stagnan.
-4. Model dilatih selama maksimal 20 epoch (namun dihentikan lebih awal jika memenuhi kondisi early stop).
-5. Nilai minimum dari val_mae, val_rmse, dan val_loss selama pelatihan disimpan untuk setiap kombinasi.
 
 Hasil 5 Kombinasi Terbaik Berdasarkan val_mae
 | No. | embedding_size | learning_rate | regularization | batch_size | val_loss | val_mae  | val_rmse |
