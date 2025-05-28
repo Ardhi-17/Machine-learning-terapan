@@ -270,13 +270,14 @@ pada df_movies_selected, ubah fitur genre ke dalam bentuk list. Proses ini mengg
 - buat dataset baru dengan nama df_final. Dataset akhir ini diacak menggunakan `shuffle()` dari `sklearn.utils` untuk menghindari urutan data yang bias.
 - Diambil 30.000 baris secara acak sebagai dataset akhir (`df_final`) yang akan digunakan dalam modeling.
 
-### Preprocessing pada Model Content Based Filtering
+### **Preprocessing pada Model Content Based Filtering**
 
 ### 1. Buat dataframe baru dengan nama df_cbf hasil copy dari dataframe df_final
 
 ### 2. Urutkan data berdasarkan kolom movieID untuk memudahkan modeling
 
 ### 3. Cek data terduplikat
+
 cek data terduplikat pada kolom movieID dan ditemukan sebanyak 27457 data terduplikat. Hapus data duplikat yang ditemukan pada kolom movieID
 
 ### 4. Konversi Data Series Menjadi List
@@ -337,7 +338,7 @@ Hasil ini akan digunakan dalam perhitungan kemiripan antar film pada tahap selan
 tfidf_matrix = tf_cbf.fit_transform(data_cbf["genres"])
 ```
 
-### Preprocessing Pada Model Collaborative Filtering
+### **Preprocessing Pada Model Collaborative Filtering**
 
 ### 1. Mengambil Daftar Unik userId untuk proses encoding
 User ID diambil tanpa duplikasi menggunakan `unique().tolist()`:
